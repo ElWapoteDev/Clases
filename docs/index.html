@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Clases - Luau class library for Roblox</title>
+		<meta
+			name="description"
+			content="Clases es una libreria Luau para Roblox con clases tipadas, herencia, super, Destroy, cleanup y Rojo."
+		/>
+		<link rel="stylesheet" href="assets/styles.css" />
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="topbar-inner">
+				<div class="brand"><span class="mark">C</span> Clases</div>
+				<nav class="nav" aria-label="Principal">
+					<a href="#tipado">Tipado</a>
+					<a href="#api">API</a>
+					<a href="#cleanup">Cleanup</a>
+					<a href="#herencia">Herencia</a>
+					<a href="#instalacion">Instalacion</a>
+					<a href="#faq">FAQ</a>
+				</nav>
+			</div>
+		</header>
+
+		<section class="hero">
+			<div class="hero-inner">
+				<div>
+					<h1>Clases</h1>
+					<p class="lead">
+						Una libreria Luau para Roblox que convierte el patron normal de metatables en un sistema de objetos
+						con lifecycle, tipado practico, cleanup, herencia y tooling serio.
+					</p>
+					<div class="actions">
+						<a class="button primary" href="#tipado">Ver tipado</a>
+						<a class="button" href="https://github.com/" id="repo-link">GitHub</a>
+					</div>
+				</div>
+				<div class="code-card" aria-label="Ejemplo">
+					<div class="code-title">typed-counter.luau</div>
+					<pre><code>local Clases = require(game.ReplicatedStorage.Shared.Clases)
+
+export type Counter = Clases.Object & {
+	value: number,
+	add: (self: Counter, amount: number) -> number,
+}
+
+export type CounterClass = Clases.Class&lt;Counter&gt; & {
+	new: (value: number) -> Counter,
+}
+
+local Counter = Clases.define("Counter", {
+	constructor = function(self: Counter, value: number)
+		self.value = value
+	end,
+
+	methods = {
+		add = function(self: Counter, amount: number): number
+			self.value += amount
+			return self.value
+		end,
+	},
+}) :: CounterClass</code></pre>
+				</div>
+			</div>
+		</section>
+
+		<main>
+			<section class="section" id="porque">
+				<h2>Que resuelve</h2>
+				<div class="grid">
+					<div class="card">
+						<h3>Lifecycle real</h3>
+						<p class="muted">Constructores, destructores, `Destroy` idempotente y cleanup LIFO sin reescribirlo en cada clase.</p>
+					</div>
+					<div class="card">
+						<h3>Herencia limpia</h3>
+						<p class="muted">`extend`, `super`, `IsA` y ancestros precomputados. Sin herencia multiple rara.</p>
+					</div>
+					<div class="card">
+						<h3>Tipado honesto</h3>
+						<p class="muted">`Clases.Object` y `Clases.Class&lt;T&gt;` para declarar objetos estrictos sin fingir inferencia magica.</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="section" id="tipado">
+				<h2>Tipado</h2>
+				<p>
+					El patron recomendado es declarar el tipo de instancia, declarar el tipo de clase y castear
+					`Clases.define` una vez. Asi Luau sabe que metodos existen y que devuelve `new`.
+				</p>
+				<div class="code-card">
+					<div class="code-title">Patron recomendado</div>
+					<pre><code>export type Door = Clases.Object & {
+	part: BasePart,
+	open: (self: Door) -> (),
+}
+
+export type DoorClass = Clases.Class&lt;Door&gt; & {
+	new: (part: BasePart) -> Door,
+}
+
+local Door = Clases.define("Door", {
+	constructor = function(self: Door, part: BasePart)
+		self.part = part
+	end,
+
+	methods = {
+		open = function(self: Door)
+			print("open", self.part.Name)
+		end,
+	},
+}) :: DoorClass</code></pre>
+				</div>
+				<p class="notice">
+					Usa `Class.new(...)` cuando quieras que Luau revise los argumentos del constructor. `Class(...)` tambien
+					funciona, pero sus argumentos son genericos.
+				</p>
+			</section>
+
+			<section class="section" id="api">
+				<h2>API</h2>
+				<div class="table-wrap">
+					<table>
+						<thead>
+							<tr>
+								<th>API</th>
+								<th>Uso</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr><td><code>Clases.define(name, definition)</code></td><td>Crea una clase.</td></tr>
+							<tr><td><code>Class:extend(name, definition)</code></td><td>Crea una subclase.</td></tr>
+							<tr><td><code>Class.new(...)</code></td><td>Crea instancia con constructor tipable.</td></tr>
+							<tr><td><code>Class(...)</code></td><td>Crea instancia con sintaxis corta.</td></tr>
+							<tr><td><code>object:super("method", ...)</code></td><td>Llama el metodo padre mas cercano.</td></tr>
+							<tr><td><code>object:IsA(Class)</code></td><td>Comprueba herencia.</td></tr>
+							<tr><td><code>object:addCleanup(resource)</code></td><td>Registra recurso para limpiar.</td></tr>
+							<tr><td><code>object:Destroy()</code></td><td>Corre destructores y cleanups una vez.</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<section class="section" id="cleanup">
+				<h2>Cleanup</h2>
+				<p>Clases limpia conexiones, instancias, funciones, threads y objetos con metodos conocidos.</p>
+				<div class="split">
+					<div class="code-card">
+						<div class="code-title">Conexion Roblox</div>
+						<pre><code>constructor = function(self, button: TextButton)
+	self:addCleanup(button.MouseButton1Click:Connect(function()
+		self:onClicked()
+	end))
+end</code></pre>
+					</div>
+					<div class="code-card">
+						<div class="code-title">Recurso custom</div>
+						<pre><code>self:addCleanup(part)
+self:addCleanup(function() print("done") end)
+self:addCleanup(resource, "Stop")
+
+self:Destroy()</code></pre>
+					</div>
+				</div>
+			</section>
+
+			<section class="section" id="herencia">
+				<h2>Herencia y mixins</h2>
+				<p>Herencia para identidad; mixins para capacidades.</p>
+				<div class="code-card">
+					<div class="code-title">Herencia</div>
+					<pre><code>local Animal = Clases.define("Animal", {
+	methods = {
+		speak = function(self)
+			return self.name
+		end,
+	},
+})
+
+local Dog = Animal:extend("Dog", {
+	methods = {
+		speak = function(self)
+			return `{self:super("speak")} bark`
+		end,
+	},
+})</code></pre>
+				</div>
+				<p>
+					Los mixins copian metodos. Si dos mixins chocan en el mismo metodo con funciones distintas, la clase falla al
+					definirse.
+				</p>
+			</section>
+
+			<section class="section" id="instalacion">
+				<h2>Instalacion</h2>
+				<div class="split">
+					<div>
+						<h3>Rojo</h3>
+						<pre><code>rojo build default.project.json -o build/Clases.rbxm</code></pre>
+					</div>
+					<div>
+						<h3>Vendorizado</h3>
+						<pre><code>local Clases = require(game.ReplicatedStorage.Shared.Clases)</code></pre>
+					</div>
+				</div>
+				<p>Wally y pesde estan configurados como privados hasta decidir el scope publico.</p>
+			</section>
+
+			<section class="section" id="docs">
+				<h2>Mas documentacion</h2>
+				<ul>
+					<li><a href="INSTALLATION.md">Instalacion</a></li>
+					<li><a href="TYPING.md">Tipado estricto</a></li>
+					<li><a href="API.md">API completa</a></li>
+					<li><a href="LIFECYCLE.md">Lifecycle y cleanup</a></li>
+					<li><a href="MIXINS.md">Herencia y mixins</a></li>
+					<li><a href="ROBLOX.md">Uso en Roblox</a></li>
+					<li><a href="MIGRATION.md">Migracion</a></li>
+					<li><a href="DESIGN.md">Diseno interno</a></li>
+					<li><a href="FAQ.md">FAQ</a></li>
+				</ul>
+			</section>
+
+			<section class="section" id="faq">
+				<h2>FAQ corto</h2>
+				<h3>Es mas rapido que una clase manual?</h3>
+				<p>
+					Las llamadas de metodo quedan muy cerca del patron manual. Crear, destruir, `super` e `IsA` tienen coste
+					extra porque agregan lifecycle e introspeccion.
+				</p>
+				<h3>Reemplaza Trove?</h3>
+				<p>No siempre. Cubre el cleanup normal de una instancia. Puedes registrar Trove si necesitas su API completa.</p>
+				<h3>Debo usarlo para todo?</h3>
+				<p>No. Usalo para objetos con estado y ciclo de vida; no para tablas de configuracion o funciones puras.</p>
+			</section>
+		</main>
+
+		<footer class="footer">
+			Clases: Luau classes for Roblox with lifecycle, cleanup and strict typing.
+		</footer>
+	</body>
+</html>

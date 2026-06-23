@@ -1,0 +1,17 @@
+# Project place file
+/Clases.rbxlx
+/Clases.rbxm
+/build/
+*.zip
+*.tgz
+*.tar.gz
+/Packages/
+/roblox_packages/
+/luau_packages/
+/.pesde/
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+sourcemap.json

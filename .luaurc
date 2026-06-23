@@ -1,0 +1,7 @@
+{
+  "languageMode": "strict",
+  "aliases": {
+    "clases": "src",
+    "tests": "tests"
+  }
+}

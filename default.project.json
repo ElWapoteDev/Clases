@@ -1,0 +1,13 @@
+{
+  "name": "Clases",
+  "globIgnorePaths": [
+    "tests/**",
+    "docs/**",
+    ".lune/**",
+    "**/*.spec.luau",
+    "build/**"
+  ],
+  "tree": {
+    "$path": "src"
+  }
+}

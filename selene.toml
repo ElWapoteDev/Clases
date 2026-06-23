@@ -1,0 +1,8 @@
+std = "luau+roblox"
+exclude = ["build/*", "sourcemap.json"]
+
+[config]
+unused_variable = { ignore_pattern = "^_" }
+
+[rules]
+global_usage = "deny"

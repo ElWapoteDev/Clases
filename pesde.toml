@@ -1,0 +1,20 @@
+name = "local/clases"
+version = "0.1.0"
+description = "SOTA class library for Luau and Roblox: fast direct-index classes, inheritance, super, lifecycle cleanup, strict tests, and Rojo packaging."
+license = "MIT"
+authors = ["ElWapoteDev"]
+private = true
+includes = [
+	"pesde.toml",
+	"README.md",
+	"LICENSE",
+	"src/**/*.luau",
+]
+
+[target]
+environment = "roblox"
+lib = "src/init.luau"
+build_files = ["src"]
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
