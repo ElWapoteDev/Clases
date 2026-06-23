@@ -12,7 +12,8 @@ Clases es una libreria para crear objetos en Luau/Roblox con lifecycle, herencia
 6. [Uso en Roblox](ROBLOX.md)
 7. [Migracion desde clases manuales](MIGRATION.md)
 8. [Diseno interno](DESIGN.md)
-9. [FAQ](FAQ.md)
+9. [Publicacion](PUBLISHING.md)
+10. [FAQ](FAQ.md)
 
 ## Resumen rapido
 

@@ -109,6 +109,7 @@ controller:Destroy() -- desconecta MouseButton1Click
 - [Uso en Roblox](docs/ROBLOX.md)
 - [Migracion desde clases manuales](docs/MIGRATION.md)
 - [Diseno interno](docs/DESIGN.md)
+- [Publicacion](docs/PUBLISHING.md)
 - [FAQ](docs/FAQ.md)
 
 La pagina web estatica vive en [docs/index.html](docs/index.html).
