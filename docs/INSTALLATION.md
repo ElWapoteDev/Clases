@@ -49,26 +49,24 @@ El repo original usa `@self` porque su raiz es `src/init.luau`; dentro de un jue
 
 ## Wally
 
-El repo trae `wally.toml`, pero esta marcado como privado hasta definir scope real:
+Publicado en Wally como `elwapotedev/clases`. Agregalo a tu `wally.toml`:
 
 ```toml
-private = true
+[dependencies]
+Clases = "elwapotedev/clases@0.2.0"
 ```
 
-Para publicar en Wally despues:
-
-1. Cambia `name = "tu-scope/clases"`.
-2. Quita `private = true`.
-3. Ejecuta:
+Luego:
 
 ```bash
-wally package --list --output build/clases.tar.gz
-wally package --output build/clases.tar.gz
+wally install
 ```
+
+Eso lo coloca en `Packages/`. Montalo con Rojo y requierelo como cualquier paquete Wally.
 
 ## pesde
 
-Tambien existe `pesde.toml` para proyectos que usen pesde. Esta marcado como privado por la misma razon: evitar publicar accidentalmente bajo un scope temporal.
+Tambien existe `pesde.toml` para proyectos que usen pesde. Sigue marcado como privado hasta publicar en ese registro.
 
 ## Tooling recomendado
 

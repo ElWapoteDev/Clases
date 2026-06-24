@@ -6,6 +6,8 @@ Todos los cambios notables de Clases. El formato sigue
 
 ## [0.2.0] - 2026-06-23
 
+Primera version publicada en Wally como `elwapotedev/clases`.
+
 ### Added
 
 - `Clases.Class<T, A...>` ahora lleva un pack de argumentos del constructor (por

@@ -47,9 +47,16 @@ local Class = Clases.define("Class", {
 
 Si. Es realm shared. No usa APIs exclusivas de servidor o cliente.
 
-## Puedo publicar esto como paquete?
+## Como lo instalo como paquete?
 
-Si. El repo trae Wally y pesde. Por seguridad estan privados hasta que el scope real este decidido.
+Esta publicado en Wally como `elwapotedev/clases`:
+
+```toml
+[dependencies]
+Clases = "elwapotedev/clases@0.2.0"
+```
+
+Luego `wally install`. El manifiesto de pesde sigue privado hasta publicar ahi.
 
 ## Me conviene usarlo para todo?
 

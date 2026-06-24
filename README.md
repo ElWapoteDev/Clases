@@ -38,6 +38,13 @@ Clases cubre ese espacio sin meter un framework gigante.
 
 ## Instalacion rapida
 
+Con Wally:
+
+```toml
+[dependencies]
+Clases = "elwapotedev/clases@0.2.0"
+```
+
 Como modelo Rojo:
 
 ```bash
@@ -191,12 +198,16 @@ Para desarrollo en Studio:
 rojo serve dev.project.json
 ```
 
-## Wally y pesde
+## Wally
 
-Los manifests estan listos, pero marcados como privados hasta definir el scope real:
+Publicado en Wally como [`elwapotedev/clases`](https://wally.run/package/elwapotedev/clases):
 
-- [wally.toml](wally.toml)
-- [pesde.toml](pesde.toml)
+```toml
+[dependencies]
+Clases = "elwapotedev/clases@0.2.0"
+```
+
+Luego corre `wally install`. El manifiesto de [pesde](pesde.toml) queda privado hasta publicar ahi.
 
 ## Fuentes de diseno
 
