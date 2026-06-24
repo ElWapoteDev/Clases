@@ -172,7 +172,7 @@ end
 
 Si no existe metodo padre, lanza error.
 
-## `object:addCleanup(resource, methodName?)`
+## `object:addCleanup(resource, methodName?, key?)`
 
 Registra un recurso para limpiarlo despues.
 
@@ -187,6 +187,55 @@ Devuelve el mismo recurso para que puedas guardarlo:
 
 ```luau
 self.touchConnection = self:addCleanup(part.Touched:Connect(function() end))
+```
+
+Si pasas una `key`, el recurso queda indexado por esa llave. Re-registrar bajo la
+misma llave libera el recurso anterior antes de guardar el nuevo:
+
+```luau
+self:addCleanup(track(target), nil, "follow")
+-- mas tarde: reemplaza y limpia el seguimiento anterior
+self:addCleanup(track(otherTarget), nil, "follow")
+```
+
+## `object:getCleanup(key)`
+
+Devuelve el recurso registrado bajo `key`, o `nil` si no hay ninguno.
+
+```luau
+local follow = self:getCleanup("follow")
+```
+
+## `object:connect(signal, callback)`
+
+Azucar para `self:addCleanup(signal:Connect(callback))`. Devuelve la conexion.
+
+```luau
+self:connect(part.Touched, function(hit)
+	self:onTouched(hit)
+end)
+```
+
+## `object:bindToInstance(instance)`
+
+Conecta `instance.Destroying` para destruir la instancia cuando el `Instance` de
+Roblox deja de existir. Devuelve la conexion.
+
+```luau
+self:bindToInstance(self.model)
+```
+
+Nota: `Destroying` no se dispara si el `Instance` solo se recolecta por GC sin
+`:Destroy()` (por ejemplo al ponerle `Parent = nil` y soltar la referencia).
+
+## `object:addPromise(promise)`
+
+Registra una promesa: se cancela al destruir y se suelta del stack de cleanup
+cuando se resuelve. Hace duck-typing (`:cancel()` / `:finally()`), sin depender de
+una libreria de promesas concreta.
+
+```luau
+self:addPromise(loadAsset(id))
 ```
 
 ## `object:removeCleanup(resource, shouldClean?)`

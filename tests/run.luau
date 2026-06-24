@@ -136,6 +136,22 @@ test("cleans constructor failures before rethrowing", function()
 	expectEqual(table.concat(order, ","), "second,first")
 end)
 
+test("preserves a structured (non-string) constructor error", function()
+	local Bad = Clases.define("BadStruct", {
+		constructor = function()
+			error({ code = 42 })
+		end,
+	})
+
+	local ok, err = pcall(function()
+		Bad()
+	end)
+
+	expectFalse(ok)
+	expectEqual(type(err), "table")
+	expectEqual((err :: any).code, 42)
+end)
+
 test("runs destructors once, then cleanup tasks in LIFO order", function()
 	local order = {}
 
@@ -309,6 +325,186 @@ test("prevents abstract classes from being instantiated", function()
 
 	local Concrete = Abstract:extend("Concrete")
 	expectEqual(Concrete():getClassName(), "Concrete")
+end)
+
+test("keyed cleanup replaces and frees the previous resource", function()
+	local order = {}
+
+	local Thing = Clases.define("KeyedThing")
+	local thing = Thing()
+
+	thing:addCleanup(function()
+		table.insert(order, "first")
+	end, nil, "slot")
+
+	-- Re-registrar bajo la misma llave libera el recurso anterior de inmediato.
+	thing:addCleanup(function()
+		table.insert(order, "second")
+	end, nil, "slot")
+
+	expectEqual(table.concat(order, ","), "first")
+
+	thing:Destroy()
+
+	expectEqual(table.concat(order, ","), "first,second")
+end)
+
+test("getCleanup returns the resource registered under a key", function()
+	local Thing = Clases.define("LookupThing")
+	local thing = Thing()
+
+	local task = function() end
+	thing:addCleanup(task, nil, "slot")
+
+	expectEqual(thing:getCleanup("slot"), task)
+	expectEqual(thing:getCleanup("missing"), nil)
+
+	thing:Destroy()
+end)
+
+test("re-registering the same resource under one key cleans it exactly once", function()
+	local cleaned = 0
+
+	local Thing = Clases.define("RekeyThing")
+	local thing = Thing()
+
+	local resource = function()
+		cleaned += 1
+	end
+
+	thing:addCleanup(resource, nil, "slot")
+	thing:addCleanup(resource, nil, "slot") -- mismo objeto: no debe liberar ahora
+
+	expectEqual(cleaned, 0)
+
+	thing:Destroy()
+
+	expectEqual(cleaned, 1)
+end)
+
+test("keyed replace frees the keyed entry, not a same-valued unkeyed one", function()
+	local order = {}
+
+	local Thing = Clases.define("DupThing")
+	local thing = Thing()
+
+	-- El mismo objeto registrado dos veces: una con llave y otra sin ella,
+	-- con metodos distintos para distinguir cual se libera y cuando.
+	local shared = {
+		keyed = function()
+			table.insert(order, "keyed")
+		end,
+		loose = function()
+			table.insert(order, "loose")
+		end,
+	}
+	local fresh = function()
+		table.insert(order, "fresh")
+	end
+
+	thing:addCleanup(shared, "keyed", "slot")
+	thing:addCleanup(shared, "loose")
+	thing:addCleanup(fresh, nil, "slot") -- reemplaza: libera solo la entrada con llave
+
+	expectEqual(table.concat(order, ","), "keyed")
+
+	thing:Destroy()
+
+	-- Sobreviven la entrada suelta y fresh; LIFO: fresh, luego loose.
+	expectEqual(table.concat(order, ","), "keyed,fresh,loose")
+end)
+
+test("connect registers a signal connection and disconnects on destroy", function()
+	local disconnected = false
+	local received
+
+	local signal = {
+		Connect = function(_, callback: (...any) -> ...any)
+			received = callback
+			return {
+				Disconnect = function()
+					disconnected = true
+				end,
+			}
+		end,
+	}
+
+	local Controller = Clases.define("SignalController")
+	local controller = Controller()
+	controller:connect(signal, function() end)
+
+	expectTrue(type(received) == "function")
+
+	controller:Destroy()
+	expectTrue(disconnected)
+end)
+
+test("bindToInstance destroys the object when the instance dies", function()
+	local fired
+
+	local fakeInstance = {
+		Destroying = {
+			Connect = function(_, callback: (...any) -> ...any)
+				fired = callback
+				return {
+					Disconnect = function() end,
+				}
+			end,
+		},
+	}
+
+	local Component = Clases.define("BoundComponent")
+	local component = Component()
+	component:bindToInstance(fakeInstance)
+
+	expectFalse(component:isDestroyed())
+
+	fired()
+
+	expectTrue(component:isDestroyed())
+end)
+
+test("addPromise cancels a pending promise on destroy", function()
+	local cancelled = false
+
+	local promise = {
+		cancel = function()
+			cancelled = true
+		end,
+		finally = function(self: any, _callback: () -> ())
+			return self
+		end,
+	}
+
+	local Service = Clases.define("PromiseService")
+	local service = Service()
+	service:addPromise(promise)
+
+	service:Destroy()
+
+	expectTrue(cancelled)
+end)
+
+test("addPromise drops a settled promise so destroy does not cancel it", function()
+	local cancelled = false
+
+	local promise = {
+		cancel = function()
+			cancelled = true
+		end,
+		finally = function(self: any, callback: () -> ())
+			callback() -- el promise ya esta resuelto: corre finally de inmediato
+			return self
+		end,
+	}
+
+	local Service = Clases.define("SettledService")
+	local service = Service()
+	service:addPromise(promise)
+
+	service:Destroy()
+
+	expectFalse(cancelled)
 end)
 
 local passed = 0

@@ -28,11 +28,9 @@ export type PlotObject = Clases.Object & {
 	Plot: Model,
 }
 
-export type PlotObjectClass = Clases.Class<PlotObject> & {
-	new: (plot: Model) -> PlotObject,
-}
+export type PlotObjectClass = Clases.Class<PlotObject, (Model)>
 
-local PlotObject = Clases.define("PlotObject", {
+local PlotObject: PlotObjectClass = Clases.define("PlotObject", {
 	constructor = function(self: PlotObject, plot: Model)
 		self.Plot = plot
 	end,
@@ -40,7 +38,7 @@ local PlotObject = Clases.define("PlotObject", {
 	destructor = function(self: PlotObject)
 		print("destroy plot object")
 	end,
-}) :: PlotObjectClass
+})
 
 return PlotObject
 ```

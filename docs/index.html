@@ -1,57 +1,105 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Clases - Luau class library for Roblox</title>
+		<title>Clases — librería de clases Luau para Roblox</title>
 		<meta
 			name="description"
-			content="Clases es una libreria Luau para Roblox con clases tipadas, herencia, super, Destroy, cleanup y Rojo."
+			content="Clases: librería Luau estricta para Roblox con clases tipadas, herencia, super, Destroy idempotente, cleanup de recursos y tooling headless."
+		/>
+		<meta name="color-scheme" content="dark light" />
+		<meta property="og:title" content="Clases — librería de clases Luau para Roblox" />
+		<meta
+			property="og:description"
+			content="Clases tipadas con lifecycle real: herencia, super, cleanup de recursos y tooling headless. Núcleo pequeño, sin magia."
 		/>
 		<link rel="stylesheet" href="assets/styles.css" />
+		<script>
+			// Tema antes del primer pintado para evitar parpadeo.
+			(function () {
+				try {
+					var saved = localStorage.getItem("clases-theme");
+					var theme = saved || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+					document.documentElement.setAttribute("data-theme", theme);
+				} catch (e) {}
+			})();
+		</script>
 	</head>
 	<body>
 		<header class="topbar">
 			<div class="topbar-inner">
-				<div class="brand"><span class="mark">C</span> Clases</div>
-				<nav class="nav" aria-label="Principal">
+				<a class="brand" href="#inicio"><span class="mark">C</span> Clases</a>
+				<nav class="nav" aria-label="Secciones">
 					<a href="#tipado">Tipado</a>
-					<a href="#api">API</a>
 					<a href="#cleanup">Cleanup</a>
 					<a href="#herencia">Herencia</a>
-					<a href="#instalacion">Instalacion</a>
-					<a href="#faq">FAQ</a>
+					<a href="#comparacion">Comparación</a>
+					<a href="api.html">Docs</a>
 				</nav>
+				<span class="topbar-spacer"></span>
+				<div class="topbar-actions">
+					<a
+						class="icon-link"
+						href="https://github.com/ElWapoteDev/Clases"
+						aria-label="Repositorio en GitHub"
+						rel="noopener"
+					>
+						<svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+							<path
+								d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
+							/>
+						</svg>
+					</a>
+					<button class="theme-toggle" type="button" aria-label="Cambiar tema" id="theme-toggle">
+						<svg class="moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+						</svg>
+						<svg class="sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<circle cx="12" cy="12" r="4" />
+							<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+						</svg>
+					</button>
+				</div>
 			</div>
 		</header>
 
-		<section class="hero">
+		<section class="hero" id="inicio">
 			<div class="hero-inner">
 				<div>
-					<h1>Clases</h1>
+					<span class="eyebrow">Luau · Roblox · <code style="background:none;border:none;padding:0;color:inherit">--!strict</code></span>
+					<h1>Clases con lifecycle real, sin magia.</h1>
 					<p class="lead">
-						Una libreria Luau para Roblox que convierte el patron normal de metatables en un sistema de objetos
-						con lifecycle, tipado practico, cleanup, herencia y tooling serio.
+						Una librería Luau para Roblox que convierte el patrón de metatables en un sistema de objetos tipado:
+						herencia, <code>super</code>, <code>Destroy</code> idempotente, cleanup de recursos y herramientas
+						headless. El núcleo se mantiene pequeño y explicable.
 					</p>
 					<div class="actions">
-						<a class="button primary" href="#tipado">Ver tipado</a>
-						<a class="button" href="https://github.com/" id="repo-link">GitHub</a>
+						<a class="btn btn-primary" href="#tipado">Empezar</a>
+						<a class="btn" href="https://github.com/ElWapoteDev/Clases" rel="noopener">Ver en GitHub</a>
+					</div>
+					<div class="hero-meta">
+						<span><strong>3</strong> módulos de núcleo</span>
+						<span><strong>0</strong> dependencias</span>
+						<span><strong>__index</strong> plano, profundidad 1</span>
 					</div>
 				</div>
-				<div class="code-card" aria-label="Ejemplo">
-					<div class="code-title">typed-counter.luau</div>
-					<pre><code>local Clases = require(game.ReplicatedStorage.Shared.Clases)
+				<div class="codeblock" data-filename="Counter.luau">
+					<div class="codeblock-head">
+						<span class="codeblock-name">Counter.luau</span>
+						<button class="copy" type="button">Copiar</button>
+					</div>
+					<pre class="codeblock-body"><code data-lang="luau">local Clases = require(ReplicatedStorage.Shared.Clases)
 
-export type Counter = Clases.Object & {
+export type Counter = Clases.Object &amp; {
 	value: number,
-	add: (self: Counter, amount: number) -> number,
+	add: (self: Counter, amount: number) -&gt; number,
 }
 
-export type CounterClass = Clases.Class&lt;Counter&gt; & {
-	new: (value: number) -> Counter,
-}
+-- Un solo tipo: el pack tipa Counter.new(...)
+export type CounterClass = Clases.Class&lt;Counter, (number)&gt;
 
-local Counter = Clases.define("Counter", {
+local Counter: CounterClass = Clases.define("Counter", {
 	constructor = function(self: Counter, value: number)
 		self.value = value
 	end,
@@ -62,48 +110,70 @@ local Counter = Clases.define("Counter", {
 			return self.value
 		end,
 	},
-}) :: CounterClass</code></pre>
+})
+
+local counter = Counter.new(10)
+counter:add(5)
+counter:Destroy()</code></pre>
 				</div>
 			</div>
 		</section>
 
 		<main>
-			<section class="section" id="porque">
-				<h2>Que resuelve</h2>
-				<div class="grid">
-					<div class="card">
-						<h3>Lifecycle real</h3>
-						<p class="muted">Constructores, destructores, `Destroy` idempotente y cleanup LIFO sin reescribirlo en cada clase.</p>
+			<div class="content">
+				<section class="section" id="que-resuelve">
+					<p class="kicker">Qué resuelve</p>
+					<h2>El patrón manual, hecho consistente</h2>
+					<p class="section-lead">
+						Una clase manual de Roblox empieza con <code>Class.__index = Class</code>. Funciona para objetos
+						chicos, pero no te da lifecycle ni cleanup. Clases cubre ese espacio sin meter un framework.
+					</p>
+					<div class="grid">
+						<div class="card">
+							<div class="card-icon">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+							</div>
+							<h3>Lifecycle real</h3>
+							<p>Constructores y destructores encadenados, <code>Destroy</code> idempotente y cleanup LIFO sin reescribirlo en cada clase.</p>
+						</div>
+						<div class="card">
+							<div class="card-icon">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12" /><circle cx="18" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M18 9a9 9 0 0 1-9 9" /></svg>
+							</div>
+							<h3>Herencia limpia</h3>
+							<p><code>extend</code>, <code>super</code>, <code>IsA</code> y ancestros precomputados. Herencia simple más mixins, sin ambigüedad múltiple.</p>
+						</div>
+						<div class="card">
+							<div class="card-icon">
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16" /></svg>
+							</div>
+							<h3>Tipado honesto</h3>
+							<p><code>Clases.Object</code> y <code>Clases.Class&lt;T, A...&gt;</code> tipan instancias y argumentos del constructor, sin fingir inferencia mágica.</p>
+						</div>
 					</div>
-					<div class="card">
-						<h3>Herencia limpia</h3>
-						<p class="muted">`extend`, `super`, `IsA` y ancestros precomputados. Sin herencia multiple rara.</p>
-					</div>
-					<div class="card">
-						<h3>Tipado honesto</h3>
-						<p class="muted">`Clases.Object` y `Clases.Class&lt;T&gt;` para declarar objetos estrictos sin fingir inferencia magica.</p>
-					</div>
-				</div>
-			</section>
+				</section>
 
-			<section class="section" id="tipado">
-				<h2>Tipado</h2>
-				<p>
-					El patron recomendado es declarar el tipo de instancia, declarar el tipo de clase y castear
-					`Clases.define` una vez. Asi Luau sabe que metodos existen y que devuelve `new`.
-				</p>
-				<div class="code-card">
-					<div class="code-title">Patron recomendado</div>
-					<pre><code>export type Door = Clases.Object & {
+				<section class="section" id="tipado">
+					<p class="kicker">Tipado</p>
+					<h2>Estricto, en un solo cast</h2>
+					<p class="section-lead">
+						Declara el tipo de instancia, declara el tipo de clase y castea <code>Clases.define</code> una vez. El
+						pack de argumentos <code>A...</code> tipa <code>Class.new(...)</code> y <code>Class(...)</code>, así que
+						no escribes <code>new</code> a mano.
+					</p>
+					<div class="codeblock">
+						<div class="codeblock-head">
+							<span class="codeblock-name">Door.luau</span>
+							<button class="copy" type="button">Copiar</button>
+						</div>
+						<pre class="codeblock-body"><code data-lang="luau">export type Door = Clases.Object &amp; {
 	part: BasePart,
-	open: (self: Door) -> (),
+	open: (self: Door) -&gt; (),
 }
 
-export type DoorClass = Clases.Class&lt;Door&gt; & {
-	new: (part: BasePart) -> Door,
-}
+export type DoorClass = Clases.Class&lt;Door, (BasePart)&gt;
 
-local Door = Clases.define("Door", {
+local Door: DoorClass = Clases.define("Door", {
 	constructor = function(self: Door, part: BasePart)
 		self.part = part
 	end,
@@ -113,67 +183,89 @@ local Door = Clases.define("Door", {
 			print("open", self.part.Name)
 		end,
 	},
-}) :: DoorClass</code></pre>
-				</div>
-				<p class="notice">
-					Usa `Class.new(...)` cuando quieras que Luau revise los argumentos del constructor. `Class(...)` tambien
-					funciona, pero sus argumentos son genericos.
-				</p>
-			</section>
+})
 
-			<section class="section" id="api">
-				<h2>API</h2>
-				<div class="table-wrap">
-					<table>
-						<thead>
-							<tr>
-								<th>API</th>
-								<th>Uso</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr><td><code>Clases.define(name, definition)</code></td><td>Crea una clase.</td></tr>
-							<tr><td><code>Class:extend(name, definition)</code></td><td>Crea una subclase.</td></tr>
-							<tr><td><code>Class.new(...)</code></td><td>Crea instancia con constructor tipable.</td></tr>
-							<tr><td><code>Class(...)</code></td><td>Crea instancia con sintaxis corta.</td></tr>
-							<tr><td><code>object:super("method", ...)</code></td><td>Llama el metodo padre mas cercano.</td></tr>
-							<tr><td><code>object:IsA(Class)</code></td><td>Comprueba herencia.</td></tr>
-							<tr><td><code>object:addCleanup(resource)</code></td><td>Registra recurso para limpiar.</td></tr>
-							<tr><td><code>object:Destroy()</code></td><td>Corre destructores y cleanups una vez.</td></tr>
-						</tbody>
-					</table>
-				</div>
-			</section>
-
-			<section class="section" id="cleanup">
-				<h2>Cleanup</h2>
-				<p>Clases limpia conexiones, instancias, funciones, threads y objetos con metodos conocidos.</p>
-				<div class="split">
-					<div class="code-card">
-						<div class="code-title">Conexion Roblox</div>
-						<pre><code>constructor = function(self, button: TextButton)
-	self:addCleanup(button.MouseButton1Click:Connect(function()
-		self:onClicked()
-	end))
-end</code></pre>
+-- assert refina: el retorno es Door, no any.
+local door = Clases.assert(workspace.Door:GetAttribute("ref"), Door)
+door:open()</code></pre>
 					</div>
-					<div class="code-card">
-						<div class="code-title">Recurso custom</div>
-						<pre><code>self:addCleanup(part)
-self:addCleanup(function() print("done") end)
-self:addCleanup(resource, "Stop")
-
-self:Destroy()</code></pre>
+					<div class="callout">
+						<p>
+							<strong>Por qué un cast.</strong> Luau no infiere la forma exacta de una clase construida desde una
+							tabla dinámica. El cast es el puente normal entre un factory en runtime y el typechecker estructural;
+							deja el <code>any</code> aislado en ese único punto.
+						</p>
 					</div>
-				</div>
-			</section>
+				</section>
 
-			<section class="section" id="herencia">
-				<h2>Herencia y mixins</h2>
-				<p>Herencia para identidad; mixins para capacidades.</p>
-				<div class="code-card">
-					<div class="code-title">Herencia</div>
-					<pre><code>local Animal = Clases.define("Animal", {
+				<section class="section" id="cleanup">
+					<p class="kicker">Cleanup &amp; lifecycle</p>
+					<h2>Los recursos se sueltan solos</h2>
+					<p class="section-lead">
+						En Roblox, conexiones, instancias, threads y promesas no se liberan cuando un objeto Luau deja de
+						referenciarse. Clases trae un stack LIFO que cubre el caso común, con helpers para los patrones más
+						frecuentes.
+					</p>
+					<div class="codeblock">
+						<div class="codeblock-head">
+							<span class="codeblock-name">Hatch.luau</span>
+							<button class="copy" type="button">Copiar</button>
+						</div>
+						<pre class="codeblock-body"><code data-lang="luau">local Hatch = Clases.define("Hatch", {
+	constructor = function(self, model: Model)
+		-- conexión: se desconecta al destruir
+		self:connect(model.PrimaryPart.Touched, function(hit)
+			self:onTouched(hit)
+		end)
+
+		-- auto-Destroy cuando el modelo deja de existir
+		self:bindToInstance(model)
+
+		-- recurso con llave: re-registrar reemplaza y limpia el anterior
+		self:addCleanup(startAmbience(model), nil, "ambience")
+
+		-- promesas: se cancelan al destruir, se sueltan al resolverse
+		self:addPromise(preload(model))
+	end,
+})
+
+local hatch = Hatch.new(workspace.Hatch)
+hatch:Destroy() -- desconecta, cancela y destruye en orden LIFO</code></pre>
+					</div>
+					<div class="split">
+						<div class="callout">
+							<p>
+								<strong>Idempotente.</strong> Llamar <code>Destroy()</code> dos veces corre destructores y cleanups
+								una sola vez. Si un constructor falla, lo registrado hasta ahí se limpia antes de relanzar.
+							</p>
+						</div>
+						<div class="callout">
+							<p>
+								<strong>Library-agnostic.</strong> <code>addPromise</code> hace duck-typing del promise (sin
+								dependencia), y <code>addCleanup</code> también acepta objetos con <code>Destroy</code>,
+								<code>Disconnect</code> o <code>cancel</code>.
+							</p>
+						</div>
+					</div>
+				</section>
+
+				<section class="section" id="herencia">
+					<p class="kicker">Herencia &amp; mixins</p>
+					<h2>Identidad por herencia, capacidades por mixin</h2>
+					<p class="section-lead">
+						Los constructores corren de base a derivada y los destructores al revés. <code>super</code> llama al
+						método heredado más cercano. Los mixins copian métodos y fallan al definirse si chocan.
+					</p>
+					<div class="codeblock">
+						<div class="codeblock-head">
+							<span class="codeblock-name">Animal.luau</span>
+							<button class="copy" type="button">Copiar</button>
+						</div>
+						<pre class="codeblock-body"><code data-lang="luau">local Animal = Clases.define("Animal", {
+	constructor = function(self, name: string)
+		self.name = name
+	end,
+
 	methods = {
 		speak = function(self)
 			return self.name
@@ -187,61 +279,334 @@ local Dog = Animal:extend("Dog", {
 			return `{self:super("speak")} bark`
 		end,
 	},
-})</code></pre>
-				</div>
-				<p>
-					Los mixins copian metodos. Si dos mixins chocan en el mismo metodo con funciones distintas, la clase falla al
-					definirse.
-				</p>
-			</section>
+})
 
-			<section class="section" id="instalacion">
-				<h2>Instalacion</h2>
-				<div class="split">
-					<div>
-						<h3>Rojo</h3>
-						<pre><code>rojo build default.project.json -o build/Clases.rbxm</code></pre>
+Dog.new("Kira"):IsA(Animal) -- true</code></pre>
 					</div>
-					<div>
-						<h3>Vendorizado</h3>
-						<pre><code>local Clases = require(game.ReplicatedStorage.Shared.Clases)</code></pre>
+				</section>
+
+				<section class="section" id="comparacion">
+					<p class="kicker">Comparación</p>
+					<h2>Dónde encaja</h2>
+					<p class="section-lead">
+						Qué trae el núcleo de Clases frente a una clase manual y a soluciones de mayor alcance. No es un
+						veredicto: Component y Classe apuntan a problemas distintos.
+					</p>
+					<div class="matrix-wrap">
+						<table class="matrix">
+							<thead>
+								<tr>
+									<th scope="col">Capacidad</th>
+									<th scope="col" class="highlight">Clases</th>
+									<th scope="col">Metatables manuales</th>
+									<th scope="col">RbxUtil Component</th>
+									<th scope="col">Classe</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row">Constructores/destructores encadenados</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="no">Manual</span></td>
+									<td><span class="partial">Parcial</span></td>
+									<td><span class="yes">Sí</span></td>
+								</tr>
+								<tr>
+									<th scope="row"><code>super</code> integrado</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="no">Manual</span></td>
+									<td><span class="no">No</span></td>
+									<td><span class="yes">Sí</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Cleanup de recursos (LIFO)</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="no">No</span></td>
+									<td><span class="partial">Extensiones</span></td>
+									<td><span class="no">No</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Bind a Instance (auto-Destroy)</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="no">No</span></td>
+									<td><span class="yes">Sí</span></td>
+									<td><span class="no">No</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Mixins con conflicto explícito</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="no">No</span></td>
+									<td><span class="no">No</span></td>
+									<td><span class="partial">Parcial</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Clases abstractas</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="no">No</span></td>
+									<td><span class="no">No</span></td>
+									<td><span class="partial">Parcial</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Tipado del constructor (<code>Class&lt;T, A...&gt;</code>)</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="partial">Manual</span></td>
+									<td><span class="partial">Parcial</span></td>
+									<td><span class="partial">Parcial</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Testeable headless (sin Studio)</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="yes">Sí</span></td>
+									<td><span class="no">Roblox</span></td>
+									<td><span class="partial">Parcial</span></td>
+								</tr>
+								<tr>
+									<th scope="row">Sin dependencias ni globals</th>
+									<td class="highlight"><span class="yes">Sí</span></td>
+									<td><span class="yes">Sí</span></td>
+									<td><span class="no">Framework</span></td>
+									<td><span class="yes">Sí</span></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-				</div>
-				<p>Wally y pesde estan configurados como privados hasta decidir el scope publico.</p>
-			</section>
+				</section>
 
-			<section class="section" id="docs">
-				<h2>Mas documentacion</h2>
-				<ul>
-					<li><a href="INSTALLATION.md">Instalacion</a></li>
-					<li><a href="TYPING.md">Tipado estricto</a></li>
-					<li><a href="API.md">API completa</a></li>
-					<li><a href="LIFECYCLE.md">Lifecycle y cleanup</a></li>
-					<li><a href="MIXINS.md">Herencia y mixins</a></li>
-					<li><a href="ROBLOX.md">Uso en Roblox</a></li>
-					<li><a href="MIGRATION.md">Migracion</a></li>
-					<li><a href="DESIGN.md">Diseno interno</a></li>
-					<li><a href="PUBLISHING.md">Publicacion</a></li>
-					<li><a href="FAQ.md">FAQ</a></li>
-				</ul>
-			</section>
+				<section class="section" id="instalacion">
+					<p class="kicker">Instalación</p>
+					<h2>Rojo, vendorizado o paquete</h2>
+					<div class="split">
+						<div class="codeblock">
+							<div class="codeblock-head">
+								<span class="codeblock-name">Modelo Rojo</span>
+								<button class="copy" type="button">Copiar</button>
+							</div>
+							<pre class="codeblock-body"><code data-lang="bash">rojo build default.project.json \
+  -o build/Clases.rbxm</code></pre>
+						</div>
+						<div class="codeblock">
+							<div class="codeblock-head">
+								<span class="codeblock-name">Vendorizado</span>
+								<button class="copy" type="button">Copiar</button>
+							</div>
+							<pre class="codeblock-body"><code data-lang="luau">local Clases = require(
+	ReplicatedStorage.Shared.Clases
+)</code></pre>
+						</div>
+					</div>
+					<p class="muted" style="font-size: 14px">
+						Wally y pesde están configurados como privados hasta fijar el scope público. Guías completas:
+					</p>
+					<div class="doclinks">
+						<a class="doclink" href="installation.html"><span class="t">Instalación</span><span class="d">Rojo, vendorizado, Wally, pesde</span></a>
+						<a class="doclink" href="typing.html"><span class="t">Tipado estricto</span><span class="d">Object, Class&lt;T, A...&gt;, herencia tipada</span></a>
+						<a class="doclink" href="api.html"><span class="t">API completa</span><span class="d">Cada función pública con ejemplos</span></a>
+						<a class="doclink" href="lifecycle.html"><span class="t">Lifecycle y cleanup</span><span class="d">Orden, LIFO, recursos soportados</span></a>
+						<a class="doclink" href="mixins.html"><span class="t">Herencia y mixins</span><span class="d">super, IsA, conflictos</span></a>
+						<a class="doclink" href="design.html"><span class="t">Diseño interno</span><span class="d">Decisiones y fuentes</span></a>
+					</div>
+				</section>
 
-			<section class="section" id="faq">
-				<h2>FAQ corto</h2>
-				<h3>Es mas rapido que una clase manual?</h3>
-				<p>
-					Las llamadas de metodo quedan muy cerca del patron manual. Crear, destruir, `super` e `IsA` tienen coste
-					extra porque agregan lifecycle e introspeccion.
-				</p>
-				<h3>Reemplaza Trove?</h3>
-				<p>No siempre. Cubre el cleanup normal de una instancia. Puedes registrar Trove si necesitas su API completa.</p>
-				<h3>Debo usarlo para todo?</h3>
-				<p>No. Usalo para objetos con estado y ciclo de vida; no para tablas de configuracion o funciones puras.</p>
-			</section>
+				<section class="section" id="no-goals">
+					<p class="kicker">Alcance</p>
+					<h2>Lo que Clases no es</h2>
+					<div class="callout warn">
+						<p>
+							Clases <strong>no</strong> es un contenedor de inyección de dependencias, ni decoradores, ni un ECS,
+							ni metaprogramación opaca. El núcleo es clases, lifecycle y cleanup. Las salidas de emergencia son
+							explícitas: <code>freeze = false</code> para mutar una clase, y las funciones libres
+							<code>Clases.is</code>, <code>Clases.assert</code>, <code>Clases.getClass</code> e
+							<code>Clases.isInstance</code> para introspección.
+						</p>
+					</div>
+					<p class="section-lead">
+						Úsala donde haya estado y ciclo de vida: controllers, componentes de mundo, objetos con conexiones,
+						armas, NPCs, servicios. Para datos constantes o funciones puras, un módulo normal es mejor.
+					</p>
+				</section>
+
+				<section class="section faq" id="faq">
+					<p class="kicker">FAQ</p>
+					<h2>Preguntas frecuentes</h2>
+
+					<details>
+						<summary>¿Es más rápido que una clase manual?</summary>
+						<div class="answer">
+							<p>
+								Las llamadas de método quedan muy cerca del patrón manual, porque las instancias usan
+								<code>__index</code> directo a la clase concreta (profundidad 1). Crear, destruir,
+								<code>super</code> e <code>IsA</code> tienen coste extra por el lifecycle y la introspección.
+							</p>
+						</div>
+					</details>
+					<details>
+						<summary>¿Reemplaza a Trove o Janitor?</summary>
+						<div class="answer">
+							<p>
+								No siempre. Cubre el cleanup normal de una instancia. Si ya necesitas su API completa, puedes
+								registrarlos con <code>self:addCleanup(trove)</code>.
+							</p>
+						</div>
+					</details>
+					<details>
+						<summary>¿Por qué <code>Class.new</code> tipa mejor que <code>Class(...)</code>?</summary>
+						<div class="answer">
+							<p>
+								Ambas funcionan en runtime y ahora ambas respetan el pack <code>A...</code>. <code>Class.new</code>
+								es la forma recomendada cuando quieres que Luau revise los argumentos del constructor.
+							</p>
+						</div>
+					</details>
+					<details>
+						<summary>¿Hay herencia múltiple?</summary>
+						<div class="answer">
+							<p>
+								No. En Luau suele generar orden ambiguo y conflictos silenciosos. Clases usa herencia simple más
+								mixins con conflicto explícito.
+							</p>
+						</div>
+					</details>
+					<details>
+						<summary>¿Puedo usarla en servidor y cliente?</summary>
+						<div class="answer">
+							<p>Sí. Es realm <em>shared</em> y no usa APIs exclusivas de servidor o cliente.</p>
+						</div>
+					</details>
+				</section>
+			</div>
+
+			<aside class="toc" aria-label="En esta página">
+				<div class="toc-title">En esta página</div>
+				<nav id="toc-nav">
+					<a href="#que-resuelve">Qué resuelve</a>
+					<a href="#tipado">Tipado</a>
+					<a href="#cleanup">Cleanup &amp; lifecycle</a>
+					<a href="#herencia">Herencia &amp; mixins</a>
+					<a href="#comparacion">Comparación</a>
+					<a href="#instalacion">Instalación</a>
+					<a href="#no-goals">Alcance</a>
+					<a href="#faq">FAQ</a>
+				</nav>
+			</aside>
 		</main>
 
 		<footer class="footer">
-			Clases: Luau classes for Roblox with lifecycle, cleanup and strict typing.
+			<div class="footer-inner">
+				<div>Clases — clases Luau para Roblox con lifecycle, cleanup y tipado estricto.</div>
+				<div><a href="https://github.com/ElWapoteDev/Clases" rel="noopener">GitHub</a> · MIT</div>
+			</div>
 		</footer>
+
+		<script>
+			// UI sin dependencias externas: tema, copiar, índice activo.
+			(function () {
+				var toggle = document.getElementById("theme-toggle");
+				if (toggle) {
+					toggle.addEventListener("click", function () {
+						var next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+						document.documentElement.setAttribute("data-theme", next);
+						try {
+							localStorage.setItem("clases-theme", next);
+						} catch (e) {}
+					});
+				}
+
+				document.querySelectorAll(".copy").forEach(function (btn) {
+					var done = function () {
+						btn.textContent = "Copiado";
+						btn.classList.add("copied");
+						setTimeout(function () {
+							btn.textContent = "Copiar";
+							btn.classList.remove("copied");
+						}, 1400);
+					};
+					var fail = function () {
+						btn.textContent = "Error";
+						setTimeout(function () {
+							btn.textContent = "Copiar";
+						}, 1400);
+					};
+					btn.addEventListener("click", function () {
+						var block = btn.closest(".codeblock");
+						var code = block && block.querySelector("code");
+						if (!code) return;
+						var text = code.textContent;
+						if (navigator.clipboard && navigator.clipboard.writeText) {
+							navigator.clipboard.writeText(text).then(done).catch(fail);
+							return;
+						}
+						// Fallback para contextos inseguros (file://).
+						try {
+							var ta = document.createElement("textarea");
+							ta.value = text;
+							ta.style.position = "fixed";
+							ta.style.opacity = "0";
+							document.body.appendChild(ta);
+							ta.select();
+							var ok = document.execCommand("copy");
+							document.body.removeChild(ta);
+							ok ? done() : fail();
+						} catch (e) {
+							fail();
+						}
+					});
+				});
+
+				var links = Array.prototype.slice.call(document.querySelectorAll("#toc-nav a"));
+				var byId = {};
+				links.forEach(function (a) {
+					byId[a.getAttribute("href").slice(1)] = a;
+				});
+				var observer = new IntersectionObserver(
+					function (entries) {
+						entries.forEach(function (entry) {
+							if (entry.isIntersecting) {
+								links.forEach(function (a) {
+									a.classList.remove("active");
+								});
+								var active = byId[entry.target.id];
+								if (active) active.classList.add("active");
+							}
+						});
+					},
+					{ rootMargin: "-20% 0px -70% 0px" }
+				);
+				document.querySelectorAll("main section[id]").forEach(function (s) {
+					observer.observe(s);
+				});
+			})();
+		</script>
+
+		<script type="module">
+			// Resaltado real de Luau con Shiki (gramática 'luau', no 'lua').
+			// Degradación elegante: si el CDN falla, el código crudo queda legible.
+			try {
+				const { codeToHtml } = await import("https://esm.sh/shiki@3.23.0");
+				const blocks = Array.from(document.querySelectorAll("pre.codeblock-body > code"));
+				// allSettled + try/catch por bloque: un fallo aislado no borra el resto.
+				await Promise.allSettled(
+					blocks.map(async (code) => {
+						try {
+							const lang = code.getAttribute("data-lang") || "luau";
+							const html = await codeToHtml(code.textContent, {
+								lang,
+								themes: { light: "github-light", dark: "github-dark" },
+								defaultColor: false,
+								// Sube el contraste del comentario en oscuro (WCAG AA).
+								colorReplacements: { "github-dark": { "#6a737d": "#8b949e" } },
+							});
+							const tpl = document.createElement("template");
+							tpl.innerHTML = html.trim();
+							const shikiCode = tpl.content.querySelector("code");
+							if (shikiCode) code.innerHTML = shikiCode.innerHTML;
+						} catch (e) {
+							/* este bloque queda en texto plano */
+						}
+					})
+				);
+			} catch (e) {
+				/* shiki no cargo: el texto plano sigue siendo legible */
+			}
+		</script>
 	</body>
 </html>

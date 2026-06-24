@@ -6,13 +6,14 @@ Porque Luau no puede deducir la forma exacta de una clase creada dinamicamente d
 
 ## Por que `Class.new` es mejor para tipado que `Class(...)`?
 
-Ambas funcionan. `Class(...)` es ergonomica, pero sus argumentos son `...any` en el tipo generico. `Class.new(...)` puede refinarse en tu `ClassType`:
+Con el pack de argumentos `A...`, ambas formas revisan los argumentos:
 
 ```luau
-type MyClass = Clases.Class<MyObject> & {
-	new: (name: string) -> MyObject,
-}
+type MyClass = Clases.Class<MyObject, (string)>
 ```
+
+`Class.new(...)` sigue siendo la forma recomendada cuando quieres dejar explicito
+que estas construyendo, pero `Class(...)` ya no pierde el tipado.
 
 ## Esto reemplaza Trove o Janitor?
 

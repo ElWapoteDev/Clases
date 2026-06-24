@@ -20,6 +20,8 @@ local checks = {
 			"analyze",
 			"--platform",
 			"standard",
+			"--definitions",
+			"types/roblox.d.luau",
 			"src/init.luau",
 			"src/Cleanup.luau",
 			"src/Registry.luau",

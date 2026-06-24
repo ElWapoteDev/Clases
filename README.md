@@ -1,8 +1,15 @@
 # Clases
 
+[![CI](https://github.com/ElWapoteDev/Clases/actions/workflows/ci.yml/badge.svg)](https://github.com/ElWapoteDev/Clases/actions/workflows/ci.yml)
+[![Docs](https://github.com/ElWapoteDev/Clases/actions/workflows/pages.yml/badge.svg)](https://github.com/ElWapoteDev/Clases/actions/workflows/pages.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Luau strict](https://img.shields.io/badge/Luau-%2D%2D!strict-1a8f52)
+
 Clases es una libreria pequena y estricta para crear clases en Luau/Roblox con lifecycle real: herencia, `super`, `Destroy`, cleanup LIFO, mixins, introspeccion y tipado practico.
 
 No intenta convertir Luau en Java. Toma el patron normal de metatables y lo vuelve consistente para proyectos grandes.
+
+Pagina de documentacion: <https://elwapotedev.github.io/Clases/>.
 
 ## Por que existe
 
@@ -16,13 +23,15 @@ Class.__index = Class
 Eso esta bien para objetos pequenos, pero no te da:
 
 - Orden automatico de constructores y destructores.
-- `Destroy` consistente.
-- Cleanup automatico de conexiones, instancias, callbacks y recursos.
+- `Destroy` consistente e idempotente.
+- Cleanup automatico de conexiones, instancias, callbacks, threads y promesas.
+- Helpers de lifecycle: `connect`, `bindToInstance` (auto-`Destroy`) y cleanup con llave.
 - `super`.
 - `IsA` con herencia real.
 - Proteccion contra nombres reservados.
 - Mixins con deteccion de conflictos.
 - Clases abstractas.
+- Tipado del constructor con `Clases.Class<T, A...>`.
 - Tooling headless, tests, benchmarks, packaging y CI.
 
 Clases cubre ese espacio sin meter un framework gigante.
@@ -54,11 +63,10 @@ export type Counter = Clases.Object & {
 	add: (self: Counter, amount: number) -> number,
 }
 
-export type CounterClass = Clases.Class<Counter> & {
-	new: (value: number) -> Counter,
-}
+-- El pack de argumentos `(number)` tipa `Counter.new(...)` y `Counter(...)`.
+export type CounterClass = Clases.Class<Counter, (number)>
 
-local Counter = Clases.define("Counter", {
+local Counter: CounterClass = Clases.define("Counter", {
 	constructor = function(self: Counter, value: number)
 		self.value = value
 	end,
@@ -69,7 +77,7 @@ local Counter = Clases.define("Counter", {
 			return self.value
 		end,
 	},
-}) :: CounterClass
+})
 
 local counter = Counter.new(10)
 counter:add(5)
@@ -83,9 +91,13 @@ Guia completa de tipado: [docs/TYPING.md](docs/TYPING.md).
 ```luau
 local ButtonController = Clases.define("ButtonController", {
 	constructor = function(self, button: TextButton)
-		self:addCleanup(button.MouseButton1Click:Connect(function()
+		-- connect registra y desconecta la conexion al destruir.
+		self:connect(button.MouseButton1Click, function()
 			self:onClicked()
-		end))
+		end)
+
+		-- bindToInstance destruye el controller cuando el boton deja de existir.
+		self:bindToInstance(button)
 	end,
 
 	methods = {
@@ -126,9 +138,14 @@ local object = Class(...)
 Instancias:
 
 - `object:IsA(Class)` / `object:is(Class)`
+- `object:assert(Class)` — refina al tipo de la clase
 - `object:super("methodName", ...)`
-- `object:addCleanup(task, methodName?)`
+- `object:addCleanup(task, methodName?, key?)`
+- `object:getCleanup(key)`
 - `object:removeCleanup(task, shouldClean?)`
+- `object:connect(signal, callback)`
+- `object:bindToInstance(instance)`
+- `object:addPromise(promise)`
 - `object:cleanup()`
 - `object:Destroy()` / `object:destroy()`
 - `object:isDestroyed()`

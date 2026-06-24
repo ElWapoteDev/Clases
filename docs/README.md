@@ -25,17 +25,15 @@ type DoorController = Clases.Object & {
 	open: (self: DoorController) -> (),
 }
 
-type DoorControllerClass = Clases.Class<DoorController> & {
-	new: (part: BasePart) -> DoorController,
-}
+type DoorControllerClass = Clases.Class<DoorController, (BasePart)>
 
-local DoorController = Clases.define("DoorController", {
+local DoorController: DoorControllerClass = Clases.define("DoorController", {
 	constructor = function(self: DoorController, part: BasePart)
 		self.part = part
 
-		self:addCleanup(part.Touched:Connect(function()
+		self:connect(part.Touched, function()
 			self:open()
-		end))
+		end)
 	end,
 
 	methods = {
@@ -43,7 +41,7 @@ local DoorController = Clases.define("DoorController", {
 			print("open", self.part.Name)
 		end,
 	},
-}) :: DoorControllerClass
+})
 
 local controller = DoorController.new(workspace.Door)
 controller:Destroy()

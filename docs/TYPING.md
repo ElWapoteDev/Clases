@@ -18,11 +18,10 @@ export type Counter = Clases.Object & {
 	add: (self: Counter, amount: number) -> number,
 }
 
-export type CounterClass = Clases.Class<Counter> & {
-	new: (value: number) -> Counter,
-}
+-- El pack de argumentos `(number)` tipa `Counter.new(...)` y `Counter(...)`.
+export type CounterClass = Clases.Class<Counter, (number)>
 
-local Counter = Clases.define("Counter", {
+local Counter: CounterClass = Clases.define("Counter", {
 	constructor = function(self: Counter, value: number)
 		self.value = value
 	end,
@@ -33,11 +32,36 @@ local Counter = Clases.define("Counter", {
 			return self.value
 		end,
 	},
-}) :: CounterClass
+})
 
 local counter = Counter.new(10)
 counter:add(5)
 counter:Destroy()
+```
+
+## El pack de argumentos `A...`
+
+`Clases.Class<T, A...>` toma un segundo parametro opcional: el pack de argumentos
+del constructor. Por defecto es `...any`, asi que `Clases.Class<Counter>` sigue
+funcionando igual. Si lo declaras, Luau revisa los argumentos:
+
+```luau
+export type CounterClass = Clases.Class<Counter, (number)>
+
+Counter.new(10) -- ok
+Counter.new("x") -- error de tipo: se esperaba number
+Counter(10) -- la forma corta tambien queda tipada
+```
+
+Los elementos del pack van sin nombre: usa `(number)`, `(number, string)`, etc.
+
+Si necesitas miembros estaticos extra ademas del constructor, sigue valido el
+patron de interseccion:
+
+```luau
+export type CounterClass = Clases.Class<Counter, (number)> & {
+	zero: () -> Counter,
+}
 ```
 
 ## Por que usar `Clases.Object`
@@ -47,7 +71,11 @@ counter:Destroy()
 - `Destroy`
 - `destroy`
 - `addCleanup`
+- `getCleanup`
 - `removeCleanup`
+- `connect`
+- `bindToInstance`
+- `addPromise`
 - `cleanup`
 - `isDestroyed`
 - `IsA`
@@ -68,15 +96,14 @@ local a = Counter(10)
 local b = Counter.new(10)
 ```
 
-Para tipado estricto de argumentos, prefiere `Class.new(...)`, porque puedes declarar:
+Con el pack `A...`, ambas formas revisan los argumentos:
 
 ```luau
-export type CounterClass = Clases.Class<Counter> & {
-	new: (value: number) -> Counter,
-}
+export type CounterClass = Clases.Class<Counter, (number)>
 ```
 
-`Class(...)` sigue devolviendo `Counter`, pero sus argumentos son `...any` por limitaciones practicas del tipo callable generico.
+`Class.new(...)` sigue siendo la forma recomendada cuando quieres dejar claro que
+estas construyendo, pero `Class(...)` ya no pierde el tipado de argumentos.
 
 ## Herencia tipada
 
@@ -88,9 +115,7 @@ export type Animal = Clases.Object & {
 	speak: (self: Animal) -> string,
 }
 
-export type AnimalClass = Clases.Class<Animal> & {
-	new: (name: string) -> Animal,
-}
+export type AnimalClass = Clases.Class<Animal, (string)>
 ```
 
 Define el hijo extendiendo el tipo de instancia:
@@ -101,9 +126,7 @@ export type Dog = Animal & {
 	fetch: (self: Dog) -> (),
 }
 
-export type DogClass = Clases.Class<Dog> & {
-	new: (name: string, breed: string) -> Dog,
-}
+export type DogClass = Clases.Class<Dog, (string, string)>
 ```
 
 Luego:
@@ -159,15 +182,13 @@ export type Service = Clases.Object & {
 	start: (self: Service) -> (),
 }
 
-export type ServiceClass = Clases.Class<Service> & {
-	new: () -> Service,
-}
+export type ServiceClass = Clases.Class<Service, ()>
 
-local Service = Clases.define("Service", {
+local Service: ServiceClass = Clases.define("Service", {
 	methods = {
 		start = function(self: Service) end,
 	},
-}) :: ServiceClass
+})
 
 return Service
 ```

@@ -61,6 +61,53 @@ end
 
 Al llamar `Destroy`, la conexion se desconecta.
 
+`connect` es azucar para el caso comun:
+
+```luau
+constructor = function(self, part: BasePart)
+	self:connect(part.Touched, function(hit)
+		self:onTouched(hit)
+	end)
+end
+```
+
+## Bind a un Instance
+
+`bindToInstance` destruye la instancia cuando el `Instance` de Roblox asociado
+dispara `Destroying`:
+
+```luau
+constructor = function(self, model: Model)
+	self.model = model
+	self:bindToInstance(model)
+end
+```
+
+`Destroying` no se dispara si el `Instance` solo se recolecta por GC sin
+`:Destroy()`. Para esos casos, sigue destruyendo tu objeto a mano.
+
+## Recursos con llave
+
+Pasa una `key` a `addCleanup` para indexar el recurso. Re-registrar bajo la misma
+llave libera el anterior primero:
+
+```luau
+self:addCleanup(track(target), nil, "follow")
+-- reemplaza y limpia el seguimiento anterior
+self:addCleanup(track(otherTarget), nil, "follow")
+
+local current = self:getCleanup("follow")
+```
+
+## Promesas
+
+`addPromise` cancela la promesa al destruir y la suelta del stack cuando se
+resuelve. Hace duck-typing, sin depender de una libreria concreta:
+
+```luau
+self:addPromise(loadAsset(id))
+```
+
 ## Instancias
 
 ```luau
@@ -101,7 +148,9 @@ Si no pasas metodo custom, Clases intenta en orden:
 
 ## Threads
 
-Si registras un thread, Clases intenta cerrarlo con `coroutine.close`.
+Si registras un thread, Clases lo cancela con `task.cancel` cuando esta disponible
+(Roblox) y cae a `coroutine.close` en runtimes headless. `task.cancel` ademas
+cancela cualquier reanudacion ya agendada por el scheduler.
 
 ```luau
 local thread = coroutine.create(function()

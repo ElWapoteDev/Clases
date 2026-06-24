@@ -7,11 +7,11 @@ export type Counter = Clases.Object & {
 	add: (self: Counter, amount: number) -> number,
 }
 
-export type CounterClass = Clases.Class<Counter> & {
-	new: (value: number) -> Counter,
-}
+-- Con el pack de argumentos del constructor, `Counter.new(...)` y `Counter(...)`
+-- quedan tipados sin tener que declarar `new` a mano.
+export type CounterClass = Clases.Class<Counter, (number)>
 
-local CounterClass = Clases.define("TypedCounter", {
+local Counter: CounterClass = Clases.define("TypedCounter", {
 	constructor = function(self: Counter, value: number)
 		self.value = value
 	end,
@@ -22,10 +22,15 @@ local CounterClass = Clases.define("TypedCounter", {
 			return self.value
 		end,
 	},
-}) :: CounterClass
+})
 
-local counter = CounterClass.new(10)
+local counter = Counter.new(10)
 counter:add(5)
+
+-- `assert` refina: `Clases.assert(value, Counter)` devuelve `Counter`, no `any`.
+local sameCounter = Clases.assert(counter, Counter)
+sameCounter:add(1)
+
 counter:Destroy()
 
-return CounterClass
+return Counter

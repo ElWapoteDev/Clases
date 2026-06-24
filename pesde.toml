@@ -1,5 +1,5 @@
 name = "local/clases"
-version = "0.1.0"
+version = "0.2.0"
 description = "SOTA class library for Luau and Roblox: fast direct-index classes, inheritance, super, lifecycle cleanup, strict tests, and Rojo packaging."
 license = "MIT"
 authors = ["ElWapoteDev"]

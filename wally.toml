@@ -1,7 +1,7 @@
 [package]
 name = "local/clases"
 description = "SOTA class library for Luau and Roblox: fast direct-index classes, inheritance, super, lifecycle cleanup, strict tests, and Rojo packaging."
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
 authors = ["ElWapoteDev"]
 realm = "shared"
@@ -13,6 +13,7 @@ exclude = [
 	"benchmarks",
 	"tests",
 	".github",
+	".claude",
 	".lune",
 	"docs",
 	"dev.project.json",
@@ -21,6 +22,7 @@ exclude = [
 	"selene.toml",
 	"sourcemap.json",
 	"stylua.toml",
+	"types",
 ]
 
 [dependencies]
