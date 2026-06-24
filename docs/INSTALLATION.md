@@ -53,7 +53,7 @@ Publicado en Wally como `elwapotedev/clases`. Agregalo a tu `wally.toml`:
 
 ```toml
 [dependencies]
-Clases = "elwapotedev/clases@0.2.0"
+Clases = "elwapotedev/clases@0.2.1"
 ```
 
 Luego:

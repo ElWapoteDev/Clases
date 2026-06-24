@@ -53,7 +53,7 @@ Esta publicado en Wally como `elwapotedev/clases`:
 
 ```toml
 [dependencies]
-Clases = "elwapotedev/clases@0.2.0"
+Clases = "elwapotedev/clases@0.2.1"
 ```
 
 Luego `wally install`. El manifiesto de pesde sigue privado hasta publicar ahi.

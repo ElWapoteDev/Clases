@@ -42,7 +42,7 @@ Con Wally:
 
 ```toml
 [dependencies]
-Clases = "elwapotedev/clases@0.2.0"
+Clases = "elwapotedev/clases@0.2.1"
 ```
 
 Como modelo Rojo:
@@ -204,7 +204,7 @@ Publicado en Wally como [`elwapotedev/clases`](https://wally.run/package/elwapot
 
 ```toml
 [dependencies]
-Clases = "elwapotedev/clases@0.2.0"
+Clases = "elwapotedev/clases@0.2.1"
 ```
 
 Luego corre `wally install`. El manifiesto de [pesde](pesde.toml) queda privado hasta publicar ahi.

@@ -4,6 +4,13 @@ Todos los cambios notables de Clases. El formato sigue
 [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto usa
 [SemVer](https://semver.org/lang/es/).
 
+## [0.2.1] - 2026-06-23
+
+### Changed
+
+- Metadata de autoria a `ElWapoteDev` (wally.toml, pesde.toml, LICENSE). Sin
+  cambios de codigo.
+
 ## [0.2.0] - 2026-06-23
 
 Primera version publicada en Wally como `elwapotedev/clases`.
@@ -54,5 +61,6 @@ Primera version publicada en Wally como `elwapotedev/clases`.
 - Tooling headless con Lune: tests, benchmarks, sourcemap y `lune run check`
   (StyLua, Selene, `luau-lsp analyze`, paquete Wally). CI y GitHub Pages.
 
+[0.2.1]: https://github.com/ElWapoteDev/Clases/releases/tag/v0.2.1
 [0.2.0]: https://github.com/ElWapoteDev/Clases/releases/tag/v0.2.0
 [0.1.0]: https://github.com/ElWapoteDev/Clases/releases/tag/v0.1.0
